@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+# credit to : http://www.laurentluce.com/
+
 # importing the Natural Language Toolkit library
 import nltk
 # training data set , manually annotated 

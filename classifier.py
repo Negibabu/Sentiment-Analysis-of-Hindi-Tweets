@@ -1,37 +1,32 @@
 #!/usr/bin/env python
-
+# -*- coding: utf-8 -*-
 # credit to : http://www.laurentluce.com/
 
 # importing the Natural Language Toolkit library
 import nltk
-# training data set , manually annotated 
-# defining positive tweets list . This can be a database 
-pos_tweets = [('I love this car', 'positive'),
-              ('This view is amazing', 'positive'),
-              ('I feel great this morning', 'positive'),
-              ('I am so excited about the concert', 'positive'),
-              ('He is my best friend', 'positive')]
+import Twitter_crawling_code
+import codecs
 
-# defining negative tweets list . This can be a database
-neg_tweets = [('I do not like this car', 'negative'),
-              ('This view is horrible', 'negative'),
-              ('I feel tired this morning', 'negative'),
-              ('I am not looking forward to the concert', 'negative'),
-              ('He is my enemy', 'negative')]
+# training data set 
+# positive tweets datset
+pos_tweets = codecs.open("pos_train.txt",'r','utf-8')
+
+# negative tweets dataset
+neg_tweets =  codecs.open("neg_train.txt",'r','utf-8')
 
 # merging the two list in one big training tuple and filtering two letters words 
 tweets = []
-for (words, sentiment) in pos_tweets + neg_tweets:
+sentiment = "positive"
+for words in pos_tweets.readlines():
     words_filtered = [e.lower() for e in words.split() if len(e) >= 3] 
     tweets.append((words_filtered, sentiment))
 
-# defining test tweets list
-test_tweets = [
-    (['feel', 'happy', 'this', 'morning'], 'positive'),
-    (['larry', 'friend'], 'positive'),
-    (['not', 'like', 'that', 'man'], 'negative'),
-    (['house', 'not', 'great'], 'negative'),
-    (['your', 'song', 'annoying'], 'negative')]
+sentiment = "negative"
+for words in neg_tweets.readlines():
+    words_filtered = [e.lower() for e in words.split() if len(e) >= 3] 
+    tweets.append((words_filtered, sentiment))
+
+
 
 # getting word frequencies from the training data 
 
@@ -47,8 +42,6 @@ def get_word_features(wordlist):
     return word_features
 
 
-#print get_words_in_tweets(tweets)
-#print get_word_features(get_words_in_tweets(tweets))
 word_features = get_word_features(get_words_in_tweets(tweets))
 
 # building a feature extractor
@@ -57,6 +50,7 @@ def extract_features(document):
     features = {}
     for word in word_features:
         features['contains(%s)' % word] = (word in document_words)
+
     return features
 
 # building the training set
@@ -65,6 +59,7 @@ training_set = nltk.classify.apply_features(extract_features, tweets)
 # training the classifier 
 classifier = nltk.NaiveBayesClassifier.train(training_set)
 
-tweet = 'Larry is my friend'
-print classifier.classify(extract_features(tweet.split()))
+def fn1(tweet):
+	#print tweet.split()
+	return classifier.classify(extract_features(tweet.split()))
 

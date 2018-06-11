@@ -1,2 +1,1 @@
-# NaiveBayesClassifierForTweets
-Two way sentiment analysis classifier for tweets
+Run gui.py
